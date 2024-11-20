@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Example</title>
+    <!-- Import de Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: 'Arial, sans-serif';
+            background-color: #f0f2f5;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(45deg, #000, #333);
+            color: #fff;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: #f5f5f5;
+            width: 220px;
+            padding: 20px;
+            border-right: 2px solid #ddd;
+            height: 100vh;
+        }
+        .sidebar a {
+            color: #333;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .sidebar a i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        .sidebar a:hover {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        /* Contenu principal */
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            font-size: 2rem;
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .bg-light {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+            }
+            .container {
+                margin-top: 20px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <!-- Titre du site -->
+                <a class="navbar-brand" href="Homepage.html" style="color: #fff; font-size: 30px;">Air Quality Monitoring Dashboard</a>
+
+                <!-- Nom de l'utilisateur aligné à droite -->
+                <div class="ml-auto" style="color: #fff;">
+                    <i class="bi bi-person"></i>
+                    <span id="infoDisplay"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="d-flex">
+        <!-- Menu latéral -->
+        <div class="sidebar">
+            <a href="Homepage.html"><i class="bi bi-house"></i> Homepage</a>
+            <a href="Datapage.html"><i class="bi bi-database"></i> Data</a>
+            <a href="Aboutpage.html"><i class="bi bi-file-earmark"></i> About Us</a>
+            <a href="Registerpage.html"><i class="bi bi-door-open"></i> Sign out</a>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="container-fluid mt-5">
+            <h2 class="text-center">About Us</h2>
+            <div class="bg-light p-4 rounded shadow">
+                <p>Welcome to our web application dedicated to monitoring and displaying real-time air quality data. Our goal is to provide users with accurate and accessible information about various atmospheric pollutants, promoting a better understanding and awareness of environmental issues.</p>
+        
+                <p>Our platform allows you to track several crucial parameters in real time, including:</p>
+                <ul>
+                    <li><strong>Temperature</strong>: Monitor temperature variations in your area to better understand the impact of climatic conditions on air quality.</li>
+                    <li><strong>Humidity</strong>: Discover the ambient humidity levels, an important factor that can influence air quality and health.</li>
+                    <li><strong>PM2.5 and PM10</strong>: These fine particles are major pollutants that can have harmful effects on human health. Track their concentration to make informed decisions about outdoor activities.</li>
+                    <li><strong>NOx (Nitrogen Oxides)</strong>: Monitor NOx levels, pollutants often emitted by vehicles and industrial facilities.</li>
+                    <li><strong>NH3 (Ammonia)</strong>: Evaluate ammonia concentrations, another atmospheric pollutant with significant environmental impacts.</li>
+                    <li><strong>CO2 (Carbon Dioxide)</strong>: Track CO2 levels, a major greenhouse gas, to understand its influence on climate change.</li>
+                    <li><strong>SO2 (Sulfur Dioxide)</strong>: Stay informed about SO2 concentrations, a pollutant associated with fossil fuel combustion.</li>
+                    <li><strong>VOC Levels (Volatile Organic Compounds)</strong>: VOCs can have harmful effects on health and indoor air quality. Our application helps you monitor them.</li>
+                </ul>
+        
+                <p>With a user-friendly interface, our site offers various options to explore this data, such as interactive charts, personalized reports, and pollution level alerts. Whether you're a health-conscious citizen or an environmental professional, our application is designed to meet your air quality monitoring needs.</p>
+        
+                <p>We believe that a better understanding of the air we breathe can lead to healthier choices and a more sustainable future. Join us in our mission to raise awareness and educate about air quality!</p>
+            </div>
+        </div>
+        
+
+    <!-- Récupération des données du Local Storage -->
+    <script>
+        const username = localStorage.getItem('username') || 'Nom';
+        const city = localStorage.getItem('city') || 'Ville';
+
+        // Affichage des données
+        document.getElementById('infoDisplay').innerHTML = `${username} (${city})`;
+    </script>
+
+    <!-- Import de Bootstrap JS (facultatif si tu as besoin de fonctionnalités interactives) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

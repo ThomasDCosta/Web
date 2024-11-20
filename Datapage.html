@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Monitoring - Graphiques</title>
+    <!-- Import de Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <!-- Titre -->
+                <a class="navbar-brand" href="#" style="color: #fff; font-size: 30px;">Air Quality Monitoring</a>
+                <!-- Nom de l'utilisateur aligné à droite -->
+                <div class="ml-auto" style="color: #fff;">
+                    <i class="bi bi-person"></i>
+                    <span id="infoDisplay"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="d-flex">
+        <!-- Menu latéral -->
+        <div class="sidebar">
+            <a href="Homepage.html"><i class="bi bi-house"></i> Homepage</a>
+            <a href="Datapage.html"><i class="bi bi-database"></i> Data</a>
+            <a href="Aboutpage.html"><i class="bi bi-file-earmark"></i> About Us</a>
+            <a href="Registerpage.html"><i class="bi bi-door-open"></i> Sign out</a>
+        </div>
+
+    <!-- Contenu principal centré -->
+    <div class="container-fluid mt-5">
+        <div class="row">
+            <!-- Graphique d'évolution de la température -->
+            <div class="col-md-6 mb-4">
+                <canvas id="temperatureEvolutionChart"></canvas>
+            </div>
+            <!-- Graphique température et humidité -->
+            <div class="col-md-6 mb-4">
+                <canvas id="temperatureHumidityChart"></canvas>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Graphique à barres des polluants -->
+            <div class="col-md-6 mb-4">
+                <canvas id="pollutantsBarChart"></canvas>
+            </div>
+            <!-- Graphique en anneau des polluants -->
+            <div class="col-md-6 mb-4">
+                <canvas id="pollutantsPieChart"></canvas>
+            </div>
+            <!-- Graphique d'évolution de l'humidité -->
+            <div class="col-md-6 mb-4">
+                <canvas id="humidityEvolutionChart"></canvas>
+            </div>
+
+        </div>
+        <!-- Message d'erreur -->
+        <p id="error-message" style="color: red; display: none;">Error loading data.</p>
+    </div>
+</div>
+
+    <!-- Script pour les graphiques -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const username = localStorage.getItem('username') || 'Nom';
+        const city = localStorage.getItem('city') || 'Paris';
+        const apiKey = 'dc398b5220186299a2518d8b1c23b285'; // Clé API OpenWeather
+        
+
+        // Données pour les graphiques
+        let humidityData = JSON.parse(localStorage.getItem('humidityData')) || []; // Stocke les données d'humidité
+
+        let temperatureData = JSON.parse(localStorage.getItem('temperatureData')) || [];
+        let timeLabels = JSON.parse(localStorage.getItem('timeLabels')) || [];
+
+        // Affichage des données utilisateur
+        document.getElementById('infoDisplay').innerHTML = `${username} (${city})`;
+
+        // Initialisation des graphiques
+        function initCharts() {
+            // Graphique d'évolution de la température
+            const temperatureEvolutionCtx = document.getElementById('temperatureEvolutionChart').getContext('2d');
+            window.temperatureEvolutionChart = new Chart(temperatureEvolutionCtx, {
+                type: 'line',
+                data: {
+                    labels: timeLabels,
+                    datasets: [{
+                        label: 'Temperature Evolution (°C)',
+                        data: temperatureData,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        fill: true
+                    }]
+                }
+            });
+
+            // Graphique température et humidité
+            const temperatureHumidityCtx = document.getElementById('temperatureHumidityChart').getContext('2d');
+            window.temperatureHumidityChart = new Chart(temperatureHumidityCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Temperature', 'Humidity'],
+                    datasets: [{
+                        label: 'Temperature et Humidity',
+                        data: [],
+                        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)'],
+                        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(54, 162, 235, 1)'],
+                        borderWidth: 1
+                    }]
+                }
+            });
+
+            // Graphique à barres des polluants
+            const pollutantsBarCtx = document.getElementById('pollutantsBarChart').getContext('2d');
+            window.pollutantsBarChart = new Chart(pollutantsBarCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['PM2.5', 'PM10', 'NO2', 'SO2', 'CO'],
+                    datasets: [{
+                        label: 'Polluants Levels',
+                        data: [],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(255, 159, 64, 0.2)',
+                            'rgba(255, 205, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 159, 64, 1)',
+                            'rgba(255, 205, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                }
+            });
+
+            // Graphique en anneau des polluants
+            const pollutantsPieCtx = document.getElementById('pollutantsPieChart').getContext('2d');
+            window.pollutantsPieChart = new Chart(pollutantsPieCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['PM2.5', 'PM10', 'NO2', 'SO2', 'CO'],
+                    datasets: [{
+                        label: 'Polluants Distribution',
+                        data: [],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(54, 162, 235, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(153, 102, 255, 0.6)'
+                        ]
+                    }]
+                }
+            });
+        }
+        // Initialisation du graphique d'évolution de l'humidité
+    function initHumidityChart() {
+        const humidityEvolutionCtx = document.getElementById('humidityEvolutionChart').getContext('2d');
+        window.humidityEvolutionChart = new Chart(humidityEvolutionCtx, {
+        type: 'line',
+        data: {
+            labels: timeLabels, // Réutilise les mêmes étiquettes de temps
+            datasets: [{
+                label: 'Humidity Evolution(%)',
+                data: humidityData, // Données initiales d'humidité
+                borderColor: '#28a745',
+                backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                fill: true
+            }]
+        }
+    });
+}
+
+
+        // Récupération des données
+        async function getCoordinates(city) {
+            const geoResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`);
+            const geoData = await geoResponse.json();
+            return geoData.coord;
+        }
+
+        async function getWeatherData(lat, lon) {
+            const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+            return await weatherResponse.json();
+        }
+
+        async function getAirQualityData(lat, lon) {
+            const airResponse = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`);
+            return await airResponse.json();
+        }
+
+        async function updateCharts() {
+            try {
+                const { lat, lon } = await getCoordinates(city);
+                const weatherData = await getWeatherData(lat, lon);
+                const airData = await getAirQualityData(lat, lon);
+
+                // Mise à jour des données
+                const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                temperatureData.push(weatherData.main.temp);
+                timeLabels.push(currentTime);
+
+                if (temperatureData.length > 24) {
+                    temperatureData.shift();
+                    timeLabels.shift();
+                }
+
+                localStorage.setItem('temperatureData', JSON.stringify(temperatureData));
+                localStorage.setItem('timeLabels', JSON.stringify(timeLabels));
+
+                // Mise à jour des graphiques
+                window.temperatureEvolutionChart.data.labels = timeLabels;
+                window.temperatureEvolutionChart.data.datasets[0].data = temperatureData;
+                window.temperatureEvolutionChart.update();
+
+                window.temperatureHumidityChart.data.datasets[0].data = [weatherData.main.temp, weatherData.main.humidity];
+                window.temperatureHumidityChart.update();
+
+                const components = airData.list[0].components;
+                window.pollutantsBarChart.data.datasets[0].data = [components.pm2_5, components.pm10, components.no2, components.so2, components.co];
+                window.pollutantsBarChart.update();
+
+                window.pollutantsPieChart.data.datasets[0].data = [components.pm2_5, components.pm10, components.no2, components.so2, components.co];
+                window.pollutantsPieChart.update();
+            } catch (error) {
+                console.error("Erreur lors de la récupération des données :", error);
+                document.getElementById('error-message').style.display = 'block';
+            }
+        }
+
+        // Initialisation au chargement de la page
+        window.onload = function () {
+            initCharts();
+            updateCharts();
+            setInterval(updateCharts, 60000); // Actualisation toutes les 60 secondes
+        };
+    </script>
+</body>
+</html>

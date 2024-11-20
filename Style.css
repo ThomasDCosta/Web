@@ -1,0 +1,269 @@
+/* Styles généraux */
+body {
+    font-family: 'Arial, sans-serif';
+    background-color: #f0f2f5;
+}
+
+/* Navbar */
+.navbar {
+    background: linear-gradient(45deg, #000, #333);
+    color: #fff;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: #f5f5f5;
+    width: 220px;
+    padding: 20px;
+    border-right: 2px solid #ddd;
+}
+.sidebar a {
+    color: #333;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+.sidebar a i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+.sidebar a:hover {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+}
+
+/* Contenu principal */
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+h2 {
+    font-size: 2rem;
+    color: #007bff;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.bg-light {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 6px;
+}
+
+/* Bouton personnalisé */
+.btn-custom {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+.btn-custom:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+    }
+    .container {
+        margin-top: 20px;
+        padding: 15px;
+    }
+}
+
+/* Cartes de données */
+.data-card1 {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px; /* Augmentation de l'espacement entre les cartes */
+    border: 1px solid #ddd;
+    border-radius: 12px; /* Coins plus arrondis */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Ombre douce */
+    font-size: 1.1rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animation au survol */
+
+    width: 285%; /* Ajustez ce pourcentage selon vos besoins */
+    height: 450px; /* Ajustez la hauteur en fonction du contenu */
+    max-width: 20000px; /* Limite la taille maximale en largeur */
+}
+
+
+.data-card2 {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px; /* Augmentation de l'espacement entre les cartes */
+    border: 1px solid #ddd;
+    border-radius: 12px; /* Coins plus arrondis */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Ombre douce */
+    font-size: 1.1rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animation au survol */
+
+    width: 200%; /* Ajustez ce pourcentage selon vos besoins */
+    height: 450px; /* Ajustez la hauteur en fonction du contenu */
+    max-width: 20000px; /* Limite la taille maximale en largeur */
+}
+
+/* Effet de survol des cartes */
+.data-card:hover {
+    transform: translateY(-5px); /* Légère élévation de la carte */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Ombre plus prononcée */
+}
+
+.data-card2:hover {
+    transform: translateY(-5px); /* Légère élévation de la carte */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Ombre plus prononcée */
+}
+
+.data-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 10px; /* Ajout d'un petit espacement en dessous */
+}
+
+.data-value {
+    font-size: 2rem; /* Augmentation de la taille du texte */
+    font-weight: bold;
+    color: #333;
+    margin-top: 15px; /* Ajout d'un espacement entre les valeurs */
+}
+
+/* Espace entre les lignes */
+.row {
+    margin-bottom: 20px; /* Espacement plus important entre les lignes */
+}
+
+/* Ajustement des colonnes */
+.col-3 {
+    padding: 0 15px;
+}
+
+.data-card2 {
+    background-color: #fff;
+    padding: 25px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 100%;
+    max-width: 700px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.data-card2:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.data-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.icon-large {
+    font-size: 2rem;
+    color: #007bff;
+}
+
+.data-main-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.data-section {
+    margin-top: 10px;
+}
+
+.data-title {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.data-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #007bff;
+}
+.data-title1 {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.data-value1 {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #007bff;
+}
+.data-unit {
+    font-size: 0.5rem;
+    color: #777;
+}
+
+.data-divider {
+    margin: 10px 0;
+    border: none;
+    border-top: 1px solid #ddd;
+}
+
+.pollutants-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px; /* Espace entre les données et le graphique */
+}
+
+.pollutants-data {
+    width: 60%; /* Ajuste la largeur de la section des données */
+}
+
+.pollutants-chart-container {
+    width: 100%; /* Ajuste la largeur du conteneur du graphique */
+}
+
+.pollutants-chart-container canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+#air-quality-status {
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+}
+
+.good {
+    background-color: green;
+}
+
+.medium {
+    background-color: orange;
+}
+
+.poor {
+    background-color: red;
+}
