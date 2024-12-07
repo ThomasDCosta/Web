@@ -18,55 +18,61 @@
                 <a class="navbar-brand" href="Homepage.html" style="color: #fff; font-size: 30px;">Air Quality Monitoring Dashboard</a>
 
                 <!-- Nom de l'utilisateur aligné à droite -->
-                <div class="ml-auto" style="color: #fff;">
+                <div class="ml-auto" style="color: #fff; display: flex; align-items: center;">
                     <i class="bi bi-person"></i>
-                    <span id="infoDisplay"></span> <!-- Utilisation d'un span ici pour le nom d'utilisateur -->
+                    <span id="infoDisplay" style="margin-right: 10px;"></span>
+                    <input type="text" id="cityInput" placeholder="Enter city" style="margin-right: 10px; padding: 2px 5px; border-radius: 4px; border: 1px solid #ccc;">
+                    <button id="updateCityBtn" class="btn btn-primary btn-sm">Update City</button>
                 </div>
             </div>
         </nav>
     </header>
 
     <div class="d-flex">
-        <!-- Menu latéral -->
         <div class="sidebar">
             <a href="Homepage.html"><i class="bi bi-house"></i> Homepage</a>
             <a href="Datapage.html"><i class="bi bi-database"></i> Data</a>
             <a href="Aboutpage.html"><i class="bi bi-file-earmark"></i> About Us</a>
-            <a href="Registerpage.html"><i class="bi bi-door-open"></i> Sign out</a>
+            <a href="index.html"><i class="bi bi-door-open"></i> Sign out</a>
         </div>
 
-        <!-- Contenu principal -->
         <div class="container-fluid mt-5">
-            <h2 class="text-center">Air quality and weather data</h2>
 
-            <!-- Première ligne avec 4 cases -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="data-card3">
+                <h1 class="data-main-title"><span id="current-city">loading...</span></h1>
+            <div>
+                <div class="data-title"><span id="current-time">loading...</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
             <div class="row">
                 <div class="col-3">
                     <div class="data-card2">
-                        <!-- En-tête avec icône et titre -->
+            
                         <div class="data-header">
                             <h3 class="data-main-title">Current conditions</h3>
                         </div>
+                        <img id="weather-icon" alt="Weather Icon" />
                         
-                        <!-- Température -->
                         <div class="data-section">
                             <div class="data-title"><i class="bi bi-thermometer"></i> Temperature</div>
                             <div class="data-value" id="temperature">loading...</div>
                         </div>
-                        
-                        <!-- Séparateur -->
+
                         <hr class="data-divider">
-                        
-                        <!-- Humidité -->
+       
                         <div class="data-section">
                             <div class="data-title"><i class="bi bi-droplet"></i> Humidity</div>
                             <div class="data-value" id="humidity">loading...</div>
                         </div>
-                        
-                        <!-- Séparateur -->
+
                         <hr class="data-divider">
                         
-                        <!-- Autres informations (optionnelles) -->
                         <div class="data-section">
                             <div class="data-title"><i class="bi bi-wind"></i> Wind</div>
                             <div class="data-value" id="wind-speed">loading...</div>
@@ -78,10 +84,8 @@
 
                 <div class="col-3">
                     <div class="data-card1">
-                        
-                        <!-- Conteneur pour les données des polluants et le graphique -->
+                       
                         <div class="pollutants-content">
-                            <!-- Section des données de polluants -->
                             <div class="pollutants-data">
                                     <div class="data-main-title">Polluants</div>
                                 <div class="data-section">
@@ -113,120 +117,128 @@
                                 </div>
                                 
                             </div>
-                            
-                            <!-- Graphique en camembert -->
+                     
                             <div class="pollutants-chart-container">
                                 <canvas id="pollutantsPieChart"></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                
 
-            
-          
-            
-            <!-- Graphiques -->
-
-            <div class="row mt-5">
-                <div class="col-6">
-                    <canvas id="temperatureEvolutionChart"></canvas>
-                </div>
-            </div>
-            <div class="row mt-5">
-                <div class="col-6">
-                    <canvas id="temperatureHumidityChart"></canvas>
-                </div>
-                <div class="col-6">
-                    <canvas id="pollutantsBarChart"></canvas>
-                </div>
-            </div>
-
-            <div class="row mt-5">
-                <div class="col-6">
-                    <canvas id="pollutantsPieChart"></canvas>
-                </div>
-            </div>
-
-            
-
-            
-
-            <!-- Message d'erreur -->
             <p id="error-message" style="color: red; display: none;">Error loading data.</p>
         </div>
+
+        <footer style="background-color: #f8f9fa; padding: 10px; text-align: center; font-size: 14px; border-top: 1px solid #ddd;">
+            <p>
+                Powered by 
+                <a href="https://openweathermap.org/" target="_blank" style="color: #007bff; text-decoration: none;">
+                    OpenWeatherMap
+                </a>
+            </p>
+            <p>&copy; 2024 Air Quality Monitoring Dashboard</p>
+        </footer>
+
     </div>
 
-    <!-- Récupération des données du Local Storage -->
+
     <script>
 
-// Récupération des données du Local Storage avec valeurs par défaut
 const username = localStorage.getItem('username') || 'Nom';
-const city = localStorage.getItem('city') || 'Paris';
+
+const apiKey = 'dc398b5220186299a2518d8b1c23b285'; 
+
+let temperatureData = JSON.parse(localStorage.getItem('temperatureData')) || [];
+let timeLabels = JSON.parse(localStorage.getItem('timeLabels')) || [];
 
 
-// Affichage des données utilisateur
-document.getElementById('infoDisplay').innerHTML = `${username} (${city})`;
+document.getElementById('updateCityBtn').addEventListener('click', async () => {
+    let cityInputValue = document.getElementById('cityInput').value.trim();
 
-const apiKey = 'dc398b5220186299a2518d8b1c23b285'; // Clé API OpenWeather
+    if (cityInputValue) {
+        
+        localStorage.setItem('city', cityInputValue);
 
-let temperatureData = JSON.parse(localStorage.getItem('temperatureData')) || []; // Stocke les données de température pour le graphique d'évolution
-let timeLabels = JSON.parse(localStorage.getItem('timeLabels')) || []; // Stocke les étiquettes de temps
+        
+        savedCity = cityInputValue;
+
+        
+        document.getElementById('current-city').textContent = cityInputValue;
+
+        await getAirQualityData(savedCity);
+
+        console.log(`City updated to: ${savedCity}`);
+    } else {
+      
+        alert("Please enter a valid city name.");
+    }
+});
+
+
+
+let savedCity = localStorage.getItem('city') || 'Paris'; 
+document.getElementById('infoDisplay').textContent = `${username}`;
+
 
 async function getCoordinates(city) {
-    const geoResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`);
-    const geoData = await geoResponse.json();
-    return geoData.coord;
-}
-
-async function getWeatherData(lat, lon) {
-    const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
-    const weatherData = await weatherResponse.json();
-    return weatherData;
-}
-
-async function getAirQualityData() {
-    document.getElementById('error-message').style.display = 'none';
-
     try {
-        const { lat, lon } = await getCoordinates(city);
-        const weatherData = await getWeatherData(lat, lon);
-        const airResponse = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`);
-        const airData = await airResponse.json();
-
-        if (airData && airData.list && airData.list.length > 0) {
-            document.getElementById('error-message').style.display = 'none';
-            displayAirQualityData(airData, weatherData);
-            updateCharts(weatherData, airData); // Mise à jour des graphiques avec les nouvelles données
-        } else {
-            throw new Error("Données non valides");
-        }
+        const geoResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`);
+        const geoData = await geoResponse.json();
+        if (geoData.cod !== 200) throw new Error("City not found");
+        return geoData.coord;
     } catch (error) {
-        console.error("Erreur lors de la récupération des données :", error);
+        console.error("Error fetching coordinates:", error);
         document.getElementById('error-message').style.display = 'block';
     }
 }
 
-function displayAirQualityData(airData, weatherData) {
+async function getWeatherData(lat, lon) {
+    try {
+        const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+        const weatherData = await weatherResponse.json();
+        return weatherData;
+    } catch (error) {
+        console.error("Error fetching weather data:", error);
+        document.getElementById('error-message').style.display = 'block';
+    }
+}
+
+async function getAirQualityData(city) {
+    try {
+        const geoData = await getCoordinates(city);
+        const { lat, lon } = geoData;
+        const weatherData = await getWeatherData(lat, lon);
+        const airData = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`);
+        const airQuality = await airData.json();
+
+        displayAirQualityData(airQuality, weatherData, city); // Pass city to displayAirQualityData
+        updateCharts(weatherData, airQuality); // Update charts with new data
+    } catch (error) {
+        document.getElementById('error-message').style.display = 'block'; // Show error message
+    }
+}
+
+
+function displayAirQualityData(airData, weatherData, city) {
     const components = airData.list[0].components;
 
-    // Afficher les données de pollution de l'air
+
+    document.getElementById('current-city').textContent = city;
+
     document.getElementById('pm25').textContent = `${components.pm2_5} µg/m³`;
     document.getElementById('pm10').textContent = `${components.pm10} µg/m³`;
     document.getElementById('no2').textContent = `${components.no2} µg/m³`;
     document.getElementById('so2').textContent = `${components.so2} µg/m³`;
     document.getElementById('co').textContent = `${components.co} µg/m³`;
 
-    // Afficher la température, l'humidité et la vitesse du vent
     document.getElementById('temperature').textContent = `${weatherData.main.temp} °C`;
     document.getElementById('humidity').textContent = `${weatherData.main.humidity}%`;
-    document.getElementById('wind-speed').textContent = `${weatherData.wind.speed} m/s`; // Vitesse du vent en m/s
+    document.getElementById('wind-speed').textContent = `${weatherData.wind.speed} m/s`;
 
-    // Calcul de la qualité de l'air
+    const weatherIcon = weatherData.weather[0].icon;
+    const iconUrl = `https://openweathermap.org/img/wn/${weatherIcon}@2x.png`;
+    document.getElementById('weather-icon').src = iconUrl;
+
     const airQualityIndex = calculateAirQualityIndex(components);
-
-    // Mettre à jour l'indicateur de qualité de l'air
     const airQualityStatus = document.getElementById('air-quality-status');
     if (airQualityIndex <= 50) {
         airQualityStatus.textContent = `${Math.round(airQualityIndex)} Good air quality`;
@@ -240,31 +252,18 @@ function displayAirQualityData(airData, weatherData) {
     }
 }
 
-// Calcul de l'indice de qualité de l'air basé sur les niveaux des principaux polluants
+
 function calculateAirQualityIndex(components) {
-    const pm25 = components.pm2_5;
-    const pm10 = components.pm10;
-    const no2 = components.no2;
-    const so2 = components.so2;
-    const co = components.co;
-
-    // Pour simplifier, nous utilisons une évaluation très basique des polluants
     let airQualityIndex = 0;
-
-    // Ajouter les valeurs des polluants à l'indice
-    airQualityIndex += pm25 * 0.2;
-    airQualityIndex += pm10 * 0.1;
-    airQualityIndex += no2 * 0.3;
-    airQualityIndex += so2 * 0.2;
-    airQualityIndex += co * 0.2;
-
+    airQualityIndex += components.pm2_5 * 0.2;
+    airQualityIndex += components.pm10 * 0.1;
+    airQualityIndex += components.no2 * 0.3;
+    airQualityIndex += components.so2 * 0.2;
+    airQualityIndex += components.co * 0.2;
     return airQualityIndex;
 }
 
-
-// Initialisation des graphiques avec Chart.js
 function initCharts() {
-    // Initialisation du graphique en camembert des polluants
     const pollutantsPieCtx = document.getElementById('pollutantsPieChart').getContext('2d');
     window.pollutantsPieChart = new Chart(pollutantsPieCtx, {
         type: 'doughnut',
@@ -279,31 +278,43 @@ function initCharts() {
     });
 }
 
-// Met à jour les graphiques avec les nouvelles données
 function updateCharts(weatherData, airData) {
     const components = airData.list[0].components;
-    // Mise à jour du graphique en camembert des polluants
     window.pollutantsPieChart.data.datasets[0].data = [components.pm2_5, components.pm10, components.no2, components.so2, components.co];
     window.pollutantsPieChart.update();
+
 }
 
+function updateTime() {
+    const now = new Date();
+    const dateString = now.toLocaleDateString('en-GB', {  
+        weekday: 'long', 
+        year: 'numeric',
+        month: 'long', 
+        day: 'numeric' 
+    });
+    document.getElementById('current-time').textContent = dateString;
+}
+
+updateTime();
 
 
-// Initialisation des graphiques et récupération des données au chargement de la page
+updateTime();
+setInterval(updateTime, 1000); 
+
+
 window.onload = function () {
-    initCharts();       // Créer uniquement le graphique en camembert
-    getAirQualityData(); // Charger les données initiales
-    setInterval(getAirQualityData, 60000); // Mettre à jour les données toutes les 60 secondes
+    initCharts();
+    getAirQualityData(savedCity); 
+    setInterval(() => getAirQualityData(savedCity), 60000);
 };
 
     </script>
 
-    <!-- Import de Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
-    <!-- Import Chart.js -->
+ 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
